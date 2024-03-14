@@ -1,5 +1,5 @@
 remote_theme: pages-themes/cayman@v0.2.0
 description: >
-  Data Analysis and Predictive Modeling pertaining to historic power outages in the United States.
+  Data Analysis and Predictive Modeling pertaining to recipes and reviews from food.com
 plugins:
 - jekyll-remote-theme
