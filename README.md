@@ -60,7 +60,7 @@ Here is a bar chart showing the distribution of the number of steps across all t
 <iframe
   src="assets/step-distribution.html"
   width="800"
-  height="600"
+  height="200"
   frameborder="0"
 ></iframe>
 
@@ -73,12 +73,96 @@ Here is a scatter plot of `avg_rating` and `n_steps` columns
 <iframe
   src="assets/rating-steps-scatter.html"
   width="800"
-  height="600"
+  height="200"
   frameborder="0"
 ></iframe>
 
+This scatter plot reveals a bias towards higher ratings for recipes with lower steps.
+
+### Interesting Aggregates
+
+The following table is a pivot comparing the mean median min and max number of steps for recipes with different number of ingredients.
+
+|   n_ingredients |   ('mean', 'n_steps') |   ('median', 'n_steps') |   ('min', 'n_steps') |   ('max', 'n_steps') |
+|----------------:|----------------------:|------------------------:|---------------------:|---------------------:|
+|               1 |               6.75    |                       7 |                    2 |                   20 |
+|               2 |               5.96993 |                       5 |                    1 |                   55 |
+|               3 |               5.53977 |                       5 |                    1 |                   69 |
+|               4 |               6.49383 |                       5 |                    1 |                   55 |
+|               5 |               7.32981 |                       6 |                    1 |                   80 |
+|               6 |               7.7409  |                       7 |                    1 |                   86 |
+|               7 |               8.29748 |                       8 |                    1 |                   52 |
+|               8 |               9.05289 |                       8 |                    1 |                   67 |
+|               9 |               9.75998 |                       9 |                    1 |                   87 |
+|              10 |              10.6983  |                      10 |                    1 |                   57 |
+|              11 |              11.1874  |                      10 |                    1 |                   65 |
+|              12 |              11.7822  |                      11 |                    1 |                   57 |
+|              13 |              12.5491  |                      11 |                    1 |                   68 |
+|              14 |              13.5407  |                      12 |                    1 |                   88 |
+|              15 |              14.3564  |                      13 |                    2 |                   62 |
+|              16 |              15.1429  |                      14 |                    2 |                   77 |
+|              17 |              15.6569  |                      15 |                    1 |                   55 |
+|              18 |              16.4107  |                      15 |                    3 |                   65 |
+|              19 |              16.6759  |                      16 |                    3 |                   59 |
+|              20 |              17.2266  |                      17 |                    2 |                   76 |
+|              21 |              18.7336  |                      17 |                    3 |                   48 |
+|              22 |              21.7214  |                      27 |                    4 |                   59 |
+|              23 |              17.7537  |                      17 |                    5 |                   59 |
+|              24 |              17.6732  |                      17 |                    4 |                   44 |
+|              25 |              19.14    |                      18 |                    6 |                   45 |
+|              26 |              18.9485  |                      21 |                    5 |                   49 |
+|              27 |              18.0882  |                      19 |                    7 |                   34 |
+|              28 |              23.9429  |                      23 |                    5 |                   76 |
+|              29 |              18.5517  |                      17 |                   15 |                   33 |
+|              30 |              27.9062  |                      23 |                    6 |                   62 |
+|              31 |              18.9167  |                      20 |                   10 |                   29 |
+|              32 |              37       |                      40 |                   28 |                   40 |
+|              33 |               6       |                       6 |                    6 |                    6 |
+
+Generally, recipes become more complex as the number of ingredients increases, but there are surprising outliers with very few or many steps for their ingredient count. This suggests that recipe complexity isn't solely determined by the number of ingredients.
+
 ## Assessment of Missingness
+
+### NMAR Analysis
+We will consider the `review` column. This column is the most likely to have NMAR missing data, since recipes with medium reviews could be correlated with missing review text. This could be due the reviewers beliving that if a recipe is straightforward enough, then it does not merit a text review.
+We could attempt to make this column MAR by adding in 
+
+### Missingness Dependency
+We'll perform a dependancy test on the columns `rating` and `n_ingredients`
+
+<iframe
+  src="assets/simulated-missing.html"
+  width="800"
+  height="200"
+  frameborder="0"
+></iframe>
+
+We can see that, with a p-value of 0.0 the `rating` column is dependant on the `n_ingredients` column.
+
 ## Hypothesis Testing
+The hypotheses I plan to test are:
+
+$H_0$: The number of steps and the expected time to complete a task have no effect on the task's rating. Any observed differences in ratings due to changes in the number of steps and expected time are purely due to chance.
+
+$H_1$: The number of steps and the expected time to complete a task both negatively affect the task's rating. Tasks that have a higher number of steps and longer expected times to complete will have lower ratings, not due to chance.
+
+To do this I perform a hypothesis test on both the interactions between `n_steps` and `avg_rating`, as well as `minutes` and `avg_rating`
+
+<iframe
+  src="assets/simulated-correlations-n_steps.html"
+  width="800"
+  height="200"
+  frameborder="0"
+></iframe>
+<iframe
+  src="assets/simulated-correlations-minutes.html"
+  width="800"
+  height="200"
+  frameborder="0"
+></iframe>
+
+the p-values were 0.366 and 0.241, which is not enough to reject $H_0$.
+
 ## Framing a Prediction Problem
 ## Baseline Model
 ## Final Model
