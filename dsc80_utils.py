@@ -40,11 +40,11 @@ sns.set_context("poster")
 sns.set_style("whitegrid")
 plt.rcParams["figure.figsize"] = (10, 5)
 
-# display options for numpy and pandas
-# np.set_printoptions(threshold=20, precision=2, suppress=True)
-# pd.set_option("display.max_rows", 7)
-# pd.set_option("display.max_columns", 8)
-# pd.set_option("display.precision", 2)
+#display options for numpy and pandas
+np.set_printoptions(threshold=20, precision=2, suppress=True)
+pd.set_option("display.max_rows", 7)
+pd.set_option("display.max_columns", 8)
+pd.set_option("display.precision", 2)
 
 # Use plotly as default plotting engine
 pd.options.plotting.backend = "plotly"
