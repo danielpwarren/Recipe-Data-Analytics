@@ -60,7 +60,7 @@ Here is a bar chart showing the distribution of the number of steps across all t
 <iframe
   src="assets/step-distribution.html"
   width="800"
-  height="200"
+  height="600"
   frameborder="0"
 ></iframe>
 
@@ -73,7 +73,7 @@ Here is a scatter plot of `avg_rating` and `n_steps` columns
 <iframe
   src="assets/rating-steps-scatter.html"
   width="800"
-  height="200"
+  height="600"
   frameborder="0"
 ></iframe>
 
@@ -133,7 +133,7 @@ We'll perform a dependancy test on the columns `rating` and `n_ingredients`
 <iframe
   src="assets/simulated-missing.html"
   width="800"
-  height="200"
+  height="600"
   frameborder="0"
 ></iframe>
 
@@ -151,19 +151,38 @@ To do this I perform a hypothesis test on both the interactions between `n_steps
 <iframe
   src="assets/simulated-correlations-n_steps.html"
   width="800"
-  height="200"
+  height="600"
   frameborder="0"
 ></iframe>
 <iframe
   src="assets/simulated-correlations-minutes.html"
   width="800"
-  height="200"
+  height="600"
   frameborder="0"
 ></iframe>
 
 the p-values were 0.366 and 0.241, which is not enough to reject $H_0$.
 
 ## Framing a Prediction Problem
+
+I'll predict the `calorie` count of each recipe, using only the `total fat (PDV)` and `protein (PDV)` columns. This is a regression problem. I chose to predict calories using these features since I wanted to see how much information could be squeezed out of the minimum amount of data. I'll be using both MSE and $R^2$ to evaluate my models.
+
 ## Baseline Model
+
+The baseline model is just a simple linear regression model trained only on the `total fat (PDV)` and `protein (PDV)`. The performance of the model was less than ideal as there wasn't much information to work with. The MSE and $R^2$ of the base model were approximately 156606.06, 0.6583 respectively.
+
 ## Final Model
+
+I added two features to the model, first a degree 2 polynomial given the `total fat (PDV)` as this was the more useful of the two parameters and boosting it gave a performance increase. I also added a binarizer for the `total fat (PDV)` with a threshold of 33.6 to mark data with relatively high fat content.
+
+The modeling algorithm I settled on was Lasso, which is a modified LinearRegression algorithm that uses L1 regularization. The hyperparameters chosen for this model were alpha=0.1, max_iter=1000, tol=0.01, fit_intercept=False. These were chosen after performing a gridsearch across different predefined hyperparameters. The model shows a small performance boost over the baseline with the test mse lowered by 628.94 and the $R^2$ increased by 0.00137.
+
 ## Fairness Analysis
+
+For the fairness evalutation of my model I choose to split the reserved test data into two groups, one of high protien and the other of low protein. The evaluation metric used was the difference in RMSE
+
+$H_0$: The model is fair, its mean RMSE for values lower than the mean protein in the dataset is close the the RMSE of values greater than the mean protein
+
+$H_1$: The model is not fair and there is a bias towards either lower or higher protein values
+
+The final p-value generated from this test was 0.0933, which is not strong enough to reject the null, so its likely that our model is fair for this group.
